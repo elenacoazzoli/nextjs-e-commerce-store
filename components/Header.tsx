@@ -1,6 +1,8 @@
+import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { cookieType } from '../util/cookies';
 
 const HeaderStyled = styled.header`
   position: fixed;
@@ -50,9 +52,11 @@ const Pages = styled.div`
 const PageLink = styled.a`
   cursor: pointer;
   border-bottom: 2px solid transparent;
+  text-decoration: none;
   transition: 0.5s;
-  padding: 12px 0 2px 0;
+  padding: 16px 0 2px 0;
   font-family: 'Work Sans', sans-serif;
+  color: #5c5c5c;
   font-weight: 200;
   font-size: 1rem;
 
@@ -61,7 +65,11 @@ const PageLink = styled.a`
   }
 `;
 
-const Header: FunctionComponent = () => {
+interface HeaderProps {
+  cartItemsNumber: number;
+}
+
+const Header: FunctionComponent<HeaderProps> = ({ cartItemsNumber }) => {
   return (
     <HeaderStyled>
       <NavigationBar>
@@ -70,17 +78,19 @@ const Header: FunctionComponent = () => {
           <Logo>pastabilities</Logo>
         </div>
         <Pages>
-          <Link href="/">
+          <Link href="/" passHref>
             <PageLink>HOME</PageLink>
           </Link>
-          <Link href="/products">
+          <Link href="/products" passHref>
             <PageLink>OUR PRODUCTS</PageLink>
           </Link>
-          <Link href="/about">
+          <Link href="/about" passHref>
             <PageLink>ABOUT</PageLink>
           </Link>
         </Pages>
-        <PageLink>CART</PageLink>
+        <Link href="/cart" passHref>
+          <PageLink>CART ( {cartItemsNumber} )</PageLink>
+        </Link>
       </NavigationBar>
     </HeaderStyled>
   );

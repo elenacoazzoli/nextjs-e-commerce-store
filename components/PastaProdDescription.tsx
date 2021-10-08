@@ -56,7 +56,7 @@ const BuyButton = styled.button`
   border-color: #e49c23;
   color: #fff;
   font-family: 'Work Sans', sans-serif;
-  width: 20%;
+  width: 120px;
   margin-top: 16px;
   padding: 6px 12px;
   cursor: pointer;
@@ -64,9 +64,15 @@ const BuyButton = styled.button`
 
 interface PastaItemProps {
   pasta: pastaType;
+  onClick: () => void;
 }
 
-const PastaProdDescription: FunctionComponent<PastaItemProps> = ({ pasta }) => {
+// to add: pasta weight and pasta cooking time
+
+const PastaProdDescription: FunctionComponent<PastaItemProps> = ({
+  pasta,
+  onClick,
+}) => {
   return (
     <PastaTypeContainer>
       <PastaImage src={pasta.image} />
@@ -75,7 +81,7 @@ const PastaProdDescription: FunctionComponent<PastaItemProps> = ({ pasta }) => {
         <PastaName>{pasta.name}</PastaName>
         <PastaDescription>{pasta.description}</PastaDescription>
         <PastaPrice>€ {pasta.price}</PastaPrice>
-        <BuyButton>Add to cart</BuyButton>
+        <BuyButton onClick={onClick}>Add to cart</BuyButton>
       </PastaInfoContainer>
     </PastaTypeContainer>
   );

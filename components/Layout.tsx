@@ -3,15 +3,22 @@ import styled from 'styled-components';
 import Header from './Header';
 
 const PageContainer = styled.main`
-  margin: 120px 64px 0 64px;
+  margin: 160px 64px 0 64px;
   height: 2000px;
 `;
 
-const Layout: FunctionComponent = (props) => {
+interface LayoutProps {
+  cartItemsNumber: number;
+}
+
+const Layout: FunctionComponent<LayoutProps> = ({
+  cartItemsNumber,
+  children,
+}) => {
   return (
     <>
-      <Header />
-      <PageContainer>{props.children}</PageContainer>
+      <Header cartItemsNumber={cartItemsNumber} />
+      <PageContainer>{children}</PageContainer>
     </>
   );
 };

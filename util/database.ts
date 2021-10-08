@@ -2,6 +2,7 @@ export type pastasType = pastaType[];
 
 export type pastaType = {
   id: number;
+  quantity?: number;
   name: string;
   description: string;
   price: number;
