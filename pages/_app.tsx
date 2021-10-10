@@ -5,7 +5,7 @@ import { createGlobalStyle } from 'styled-components';
 import { cookieType } from '../util/cookies';
 
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800;900&family=Work+Sans:wght@200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800;900&family=Work+Sans:wght@200;300;400;600&display=swap');
 *{
   box-sizing: border-box;
 
@@ -13,7 +13,8 @@ const GlobalStyle = createGlobalStyle`
 
 body{
   background-color:#faf7f6;
-  font-family:Verdana;
+  font-feature-settings:'tnum';
+  font-variant-numeric: tabular-nums;
 }
 `;
 

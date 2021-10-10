@@ -18,6 +18,18 @@ const Product: NextPage<ProductProps> = ({
   cartItemsNumber,
   updateCartItemsNumber,
 }) => {
+  const [productQuantity, setProductQuantity] = useState(1);
+
+  const productCountReducer = () => {
+    if (productQuantity > 1) {
+      setProductQuantity(productQuantity - 1);
+    }
+  };
+
+  const productCountIncrease = () => {
+    setProductQuantity(productQuantity + 1);
+  };
+
   const cartClickHandler = () => {
     // when I click on the button I want to create a cookie object that will have the key "id" of the pasta I am adding and the key"quantity += 1" in this case or the value of the input (afterwards).
 
@@ -39,16 +51,16 @@ const Product: NextPage<ProductProps> = ({
         (cookie: cookieType) => cookie.id === singlePastaProduct.id,
       );
       // Update object's name property.
-      currentCookies[cookieIndex].quantity += 1;
+      currentCookies[cookieIndex].quantity += productQuantity;
 
       newCookie = currentCookies;
     } else {
       newCookie = [
         ...currentCookies,
-        { id: singlePastaProduct.id, quantity: 1 },
+        { id: singlePastaProduct.id, quantity: productQuantity },
       ];
-      console.log(newCookie);
     }
+
     Cookies.set('shoppingcart', JSON.stringify(newCookie));
     updateCartItemsNumber(
       newCookie.reduce(
@@ -68,6 +80,9 @@ const Product: NextPage<ProductProps> = ({
       <PastaProdDescription
         pasta={singlePastaProduct}
         onClick={cartClickHandler}
+        productAmount={productQuantity}
+        lessAmount={productCountReducer}
+        moreAmount={productCountIncrease}
       />
     </Layout>
   );

@@ -10,27 +10,29 @@ const HeaderStyled = styled.header`
   left: 0px;
   width: 100%;
   background-color: #faf7f6;
+  z-index: 99;
 `;
 
 const LogoImage = styled.div`
   content: '';
   background: url('https://static1.squarespace.com/static/5caf50e090f904ee8b86f607/t/5eac08b9befe934969493189/1588332729547/Artboard+%E2%80%93+2.png');
-  width: 200px;
-  height: 200px;
-  background-size: 100px;
+  width: 160px;
+  height: 160px;
+  background-size: 80px;
   background-repeat: no-repeat;
   position: absolute;
   z-index: -2;
   left: 4%;
-  top: 12%;
+  top: 32%;
 `;
 const Logo = styled.span`
   font-family: 'Playfair Display', serif;
+  color: #2f3b4d;
   font-weight: 900;
   font-size: 3rem;
   z-index: 2;
-  box-shadow: inset 0 -18px 0 rgb(240 202 122);
-  margin-left: 64px;
+  box-shadow: inset 0 -16px 0 #f6c570;
+  margin-left: 32px;
 `;
 
 const NavigationBar = styled.nav`
@@ -61,7 +63,7 @@ const PageLink = styled.a`
   font-size: 1rem;
 
   :hover {
-    border-bottom: 2px solid #e49c23;
+    border-bottom: 2px solid #f6c570;
   }
 `;
 
