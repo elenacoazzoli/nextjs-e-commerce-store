@@ -1,8 +1,6 @@
-import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { cookieType } from '../util/cookies';
 
 const HeaderStyled = styled.header`
   position: fixed;

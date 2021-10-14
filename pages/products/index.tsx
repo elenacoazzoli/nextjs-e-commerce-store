@@ -1,9 +1,9 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import PastaItem from '../../components/PastaItem';
-import { pastasType, pastaType } from '../../util/database';
+import { getPastas, PastasType, PastaType } from '../../util/database';
 
 const PastaProductsContainer = styled.div`
   display: flex;
@@ -21,11 +21,11 @@ const ProductsHead = styled.h1`
   text-align: center;
 `;
 interface ProductsProps {
-  pastas: pastasType;
+  pastas: PastasType;
   cartItemsNumber: number;
 }
 
-const products: NextPage<ProductsProps> = ({ pastas, cartItemsNumber }) => {
+function Products({ pastas, cartItemsNumber }: ProductsProps) {
   return (
     <Layout cartItemsNumber={cartItemsNumber}>
       <Head>
@@ -35,17 +35,17 @@ const products: NextPage<ProductsProps> = ({ pastas, cartItemsNumber }) => {
       </Head>
       <ProductsHead>Our world of pastabilities</ProductsHead>
       <PastaProductsContainer>
-        {pastas.map((pasta: pastaType) => {
+        {pastas.map((pasta: PastaType) => {
           return <PastaItem pasta={pasta} key={pasta.id} />;
         })}
       </PastaProductsContainer>
     </Layout>
   );
-};
+}
 
 export const getServerSideProps: GetServerSideProps = async () => {
   // get data from API
-  const { pastas } = await import('../../util/database');
+  const pastas = await getPastas();
   return {
     props: {
       pastas,
@@ -53,4 +53,4 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-export default products;
+export default Products;

@@ -1,4 +1,3 @@
-import type { NextPage } from 'next';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
 
@@ -6,7 +5,7 @@ interface AboutProps {
   cartItemsNumber: number;
 }
 
-const About: NextPage<AboutProps> = ({ cartItemsNumber }) => {
+function About({ cartItemsNumber }: AboutProps) {
   return (
     <Layout cartItemsNumber={cartItemsNumber}>
       <Head>
@@ -17,6 +16,6 @@ const About: NextPage<AboutProps> = ({ cartItemsNumber }) => {
       <span>about page</span>
     </Layout>
   );
-};
+}
 
 export default About;

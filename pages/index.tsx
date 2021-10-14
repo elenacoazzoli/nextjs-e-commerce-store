@@ -1,10 +1,5 @@
-import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import styled from 'styled-components';
 import Layout from '../components/Layout';
-import BackgroundImage from '../public/images/homebackground.jpg';
 
 // const ImageStyled = styled(Image)``;
 
@@ -62,7 +57,7 @@ interface HomeProps {
   cartItemsNumber: number;
 }
 
-const Home: NextPage<HomeProps> = ({ cartItemsNumber }) => {
+function Home({ cartItemsNumber }: HomeProps) {
   return (
     <Layout cartItemsNumber={cartItemsNumber}>
       <Head>
@@ -88,6 +83,6 @@ const Home: NextPage<HomeProps> = ({ cartItemsNumber }) => {
       </ImageContainer> */}
     </Layout>
   );
-};
+}
 
 export default Home;

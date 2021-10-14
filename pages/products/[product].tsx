@@ -1,23 +1,23 @@
 import Cookies from 'js-cookie';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Layout from '../../components/Layout';
 import PastaProdDescription from '../../components/PastaProdDescription';
-import { cookieType } from '../../util/cookies';
-import { pastaType } from '../../util/database';
+import { CookieType } from '../../util/cookies';
+import { getPasta, PastaType } from '../../util/database';
 
 interface ProductProps {
-  singlePastaProduct: pastaType;
+  singlePastaProduct: PastaType;
   cartItemsNumber: number;
   updateCartItemsNumber: Dispatch<SetStateAction<number>>;
 }
 
-const Product: NextPage<ProductProps> = ({
+function Product({
   singlePastaProduct,
   cartItemsNumber,
   updateCartItemsNumber,
-}) => {
+}: ProductProps) {
   const [productQuantity, setProductQuantity] = useState(1);
 
   const productCountReducer = () => {
@@ -31,7 +31,7 @@ const Product: NextPage<ProductProps> = ({
   };
 
   const cartClickHandler = () => {
-    // when I click on the button I want to create a cookie object that will have the key "id" of the pasta I am adding and the key"quantity += 1" in this case or the value of the input (afterwards).
+    // when I click on the button I want to create a cookie object that will have the key "id" of the pasta I am adding the value of the input.
 
     const getCookiesFunction = Cookies.get('shoppingcart');
     const currentCookies = getCookiesFunction
@@ -40,7 +40,7 @@ const Product: NextPage<ProductProps> = ({
 
     // if in the current cookie there is an object with the id of my pasta product -> return true
     const isPastaCookieExisting = currentCookies.some(
-      (cookieObject: cookieType) => {
+      (cookieObject: CookieType) => {
         return cookieObject.id === singlePastaProduct.id; // id that comes from the URL
       },
     );
@@ -48,7 +48,7 @@ const Product: NextPage<ProductProps> = ({
     let newCookie;
     if (isPastaCookieExisting) {
       const cookieIndex = currentCookies.findIndex(
-        (cookie: cookieType) => cookie.id === singlePastaProduct.id,
+        (cookie: CookieType) => cookie.id === singlePastaProduct.id,
       );
       // Update object's name property.
       currentCookies[cookieIndex].quantity += productQuantity;
@@ -62,9 +62,10 @@ const Product: NextPage<ProductProps> = ({
     }
 
     Cookies.set('shoppingcart', JSON.stringify(newCookie));
+
     updateCartItemsNumber(
       newCookie.reduce(
-        (sum: number, cookie: cookieType) => sum + cookie.quantity,
+        (sum: number, cookie: CookieType) => sum + cookie.quantity,
         0,
       ),
     );
@@ -86,15 +87,12 @@ const Product: NextPage<ProductProps> = ({
       />
     </Layout>
   );
-};
+}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // later: get data from API
-  const idFromUrl = context.query.product;
-  const { pastas } = await import('../../util/database');
-  const singlePastaProduct = pastas.find((pasta) => {
-    return pasta.id.toString() === idFromUrl;
-  });
+  const idFromUrl = Number(context.query.product);
+  const singlePastaProduct = await getPasta(idFromUrl);
 
   return {
     props: {

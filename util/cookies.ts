@@ -1,4 +1,4 @@
-export type cookieType = {
+export type CookieType = {
   id: number;
   quantity: number;
 };

@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { pastaType } from '../util/database';
+import { PastaType } from '../util/database';
 
 const PastaTypeContainer = styled.div`
   display: flex;
@@ -134,7 +133,7 @@ const BuyButton = styled.button`
 `;
 
 interface PastaItemProps {
-  pasta: pastaType;
+  pasta: PastaType;
   onClick: () => void;
   productAmount: number;
   lessAmount: () => void;
@@ -150,7 +149,10 @@ const PastaProdDescription: FunctionComponent<PastaItemProps> = ({
 }) => {
   return (
     <PastaTypeContainer>
-      <PastaImage src={pasta.image} />
+      <PastaImage
+        alt={`picture of ${pasta.name}`}
+        src={`/images/${pasta.image}`}
+      />
       <PastaInfoContainer>
         <PastaCategory>{pasta.category.toUpperCase()}</PastaCategory>
         <PastaName>{pasta.name}</PastaName>
@@ -159,7 +161,7 @@ const PastaProdDescription: FunctionComponent<PastaItemProps> = ({
           <CookingTimeInfoContainer>
             <CookingTimeImage alt="cooking time" src="/images/wallclock.png" />
             <CookingTimeDescription>
-              {pasta.cooking_time} min
+              {pasta.cookingTime} min
             </CookingTimeDescription>
           </CookingTimeInfoContainer>
           <WeightInfoContainer>

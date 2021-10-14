@@ -2,10 +2,11 @@ import Cookies from 'js-cookie';
 import type { AppProps } from 'next/app';
 import { useEffect, useState } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import { cookieType } from '../util/cookies';
+import { CookieType } from '../util/cookies';
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800;900&family=Work+Sans:wght@200;300;400;600&display=swap');
+
 *{
   box-sizing: border-box;
 
@@ -27,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (cookies.length > 0) {
       setTotalCart(
         cookies.reduce(
-          (sum: number, cookie: cookieType) => sum + cookie.quantity,
+          (sum: number, cookie: CookieType) => sum + cookie.quantity,
           0,
         ),
       );

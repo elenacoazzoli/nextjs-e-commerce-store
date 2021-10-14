@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { pastaType } from '../util/database';
+import { PastaType } from '../util/database';
 
 const PastaTypePlaceholder = styled.div`
   display: flex;
@@ -58,7 +58,7 @@ const PastaPrice = styled.span`
 `;
 
 interface PastaItemProps {
-  pasta: pastaType;
+  pasta: PastaType;
 }
 
 const PastaItem: FunctionComponent<PastaItemProps> = ({ pasta }) => {
@@ -66,7 +66,10 @@ const PastaItem: FunctionComponent<PastaItemProps> = ({ pasta }) => {
     <PastaTypePlaceholder>
       <Link href={`/products/${pasta.id}`} passHref>
         <PastaTypeContainer aria-label={`Go to product ${pasta.name} page`}>
-          <PastaImage src={pasta.image} />
+          <PastaImage
+            alt={`picture of ${pasta.name}`}
+            src={`/images/${pasta.image}`}
+          />
           <PastaInfoContainer>
             <PastaCategory>{pasta.category.toUpperCase()}</PastaCategory>
             <PastaName>{pasta.name}</PastaName>

@@ -1,10 +1,10 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import { pastaType } from '../util/database';
+import { PastaType } from '../util/database';
 
 const CartInfoContainer = styled.div`
   display: flex;
@@ -108,18 +108,18 @@ const ContinueLink = styled.a`
 `;
 
 interface CookiesProps {
-  shoppingCart: pastaType[];
+  shoppingCart: PastaType[];
   cartItemsNumber: number;
 }
-const Cart: NextPage<CookiesProps> = ({ shoppingCart, cartItemsNumber }) => {
+function Cart({ shoppingCart, cartItemsNumber }: CookiesProps) {
   const [subTotal, setSubTotal] = useState(0.0);
 
   const isCartEmpty = shoppingCart.length === 0;
 
-  const sumPrices = (array: pastaType[]) => {
+  const sumPrices = (array: PastaType[]) => {
     array = shoppingCart;
     const summedPrices = array.reduce(
-      (sum: number, pasta: pastaType) =>
+      (sum: number, pasta: PastaType) =>
         pasta.quantity && pasta.quantity > 0
           ? sum + pasta.quantity * pasta.price
           : sum,
@@ -131,7 +131,7 @@ const Cart: NextPage<CookiesProps> = ({ shoppingCart, cartItemsNumber }) => {
 
   useEffect(() => {
     sumPrices(shoppingCart);
-  }, []);
+  });
 
   return (
     <Layout cartItemsNumber={cartItemsNumber}>
@@ -152,7 +152,7 @@ const Cart: NextPage<CookiesProps> = ({ shoppingCart, cartItemsNumber }) => {
               <TableHeadText>Unit price</TableHeadText>
               <TableHeadText>Total</TableHeadText>
             </ProductRowInfoContainer>
-            {shoppingCart.map((cartProduct: pastaType) => {
+            {shoppingCart.map((cartProduct: PastaType) => {
               return cartProduct.quantity && cartProduct.quantity > 0 ? (
                 <ProductRowInfoContainer key={cartProduct.id}>
                   <StandardText>{cartProduct.name}</StandardText>
@@ -179,7 +179,7 @@ const Cart: NextPage<CookiesProps> = ({ shoppingCart, cartItemsNumber }) => {
       </ActionsContainer>
     </Layout>
   );
-};
+}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // afterwards: get data from API
@@ -190,7 +190,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const shoppingCart = JSON.parse(cartCookies);
 
   // if in the cookie there is an object with the same id as pasta then create new object with the pasta product info
-  const finalCartCookie = shoppingCart.map((cookie: pastaType) => ({
+  const finalCartCookie = shoppingCart.map((cookie: PastaType) => ({
     ...cookie,
     ...pastas.find((pasta) => pasta.id === cookie.id),
   }));
