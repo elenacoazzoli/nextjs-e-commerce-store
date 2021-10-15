@@ -39,7 +39,7 @@ const NavigationBar = styled.nav`
   justify-content: space-between;
   margin: 0 64px;
   padding: 16px 32px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #c5c5c5;
 `;
 
 const Pages = styled.div`
@@ -57,7 +57,7 @@ const PageLink = styled.a`
   padding: 16px 0 2px 0;
   font-family: 'Work Sans', sans-serif;
   color: #5c5c5c;
-  font-weight: 200;
+  font-weight: 500;
   font-size: 1rem;
 
   :hover {

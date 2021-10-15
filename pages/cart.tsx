@@ -1,10 +1,12 @@
+import Cookies from 'js-cookie';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import { PastaType } from '../util/database';
+import { CookieType } from '../util/cookies';
+import { getPastasInCookies, PastaType } from '../util/database';
 
 const CartInfoContainer = styled.div`
   display: flex;
@@ -38,6 +40,17 @@ const TableHeadText = styled.span`
   font-size: 1.5rem;
   margin-top: 32px;
   width: 25%;
+`;
+
+const DeleteButton = styled.button`
+  color: #fff;
+  background-color: #e35c5c;
+  border-color: #e35c5c;
+  border: none;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1rem;
+  padding: 4px 10px 4px 10px;
+  cursor: pointer;
 `;
 
 const StandardText = styled.span`
@@ -110,14 +123,22 @@ const ContinueLink = styled.a`
 interface CookiesProps {
   shoppingCart: PastaType[];
   cartItemsNumber: number;
+  updateCartItemsNumber: Dispatch<SetStateAction<number>>;
+  cookies: CookieType[];
 }
-function Cart({ shoppingCart, cartItemsNumber }: CookiesProps) {
-  const [subTotal, setSubTotal] = useState(0.0);
+function Cart({
+  shoppingCart,
+  cartItemsNumber,
+  updateCartItemsNumber,
+  cookies,
+}: CookiesProps) {
+  const [subTotal, setSubTotal] = useState(0);
+  const [updatedShoppingCart, setUpdatedShoppingCart] = useState(shoppingCart);
+  const [isCartEmpty, setIsCartEmpty] = useState(shoppingCart.length === 0);
 
-  const isCartEmpty = shoppingCart.length === 0;
-
+  // sum prices of items in cart
   const sumPrices = (array: PastaType[]) => {
-    array = shoppingCart;
+    array = updatedShoppingCart;
     const summedPrices = array.reduce(
       (sum: number, pasta: PastaType) =>
         pasta.quantity && pasta.quantity > 0
@@ -126,7 +147,41 @@ function Cart({ shoppingCart, cartItemsNumber }: CookiesProps) {
       0,
     );
 
-    setSubTotal(Math.round((summedPrices + Number.EPSILON) * 100) / 100);
+    setSubTotal(Math.round(summedPrices + Number.EPSILON) / 100);
+  };
+
+  const deleteClickHandler = (id: number) => {
+    // store deleted Item
+    const deletedCartItem = updatedShoppingCart.find(
+      (cartItem) => cartItem.id === id,
+    );
+    console.log(deletedCartItem);
+
+    if (deletedCartItem) {
+      // update the shoppingcart array
+      const filteredShoppingCart = updatedShoppingCart.filter(
+        (cartItem) => cartItem.id !== id,
+      );
+      setUpdatedShoppingCart(filteredShoppingCart);
+      setIsCartEmpty(filteredShoppingCart.length === 0);
+      console.log(updatedShoppingCart);
+
+      // update cookies
+      const cookieIndex = cookies.findIndex(
+        (cookie: CookieType) => cookie.id === deletedCartItem.id,
+      );
+      cookies.splice(cookieIndex, 1);
+      Cookies.set('shoppingcart', JSON.stringify(cookies));
+
+      // update cart items sum
+      updateCartItemsNumber(
+        cookies.reduce(
+          (sum: number, cookie: CookieType) =>
+            cookie.quantity > 0 ? sum + cookie.quantity : sum,
+          0,
+        ),
+      );
+    }
   };
 
   useEffect(() => {
@@ -152,14 +207,26 @@ function Cart({ shoppingCart, cartItemsNumber }: CookiesProps) {
               <TableHeadText>Unit price</TableHeadText>
               <TableHeadText>Total</TableHeadText>
             </ProductRowInfoContainer>
-            {shoppingCart.map((cartProduct: PastaType) => {
+            {updatedShoppingCart.map((cartProduct: PastaType) => {
               return cartProduct.quantity && cartProduct.quantity > 0 ? (
                 <ProductRowInfoContainer key={cartProduct.id}>
-                  <StandardText>{cartProduct.name}</StandardText>
-                  <StandardText>{cartProduct.quantity}</StandardText>
-                  <StandardText>€{cartProduct.price.toFixed(2)} </StandardText>
                   <StandardText>
-                    €{(cartProduct.price * cartProduct.quantity).toFixed(2)}
+                    <DeleteButton
+                      onClick={() => deleteClickHandler(cartProduct.id)}
+                    >
+                      x
+                    </DeleteButton>
+                    <StandardText>{cartProduct.name}</StandardText>
+                  </StandardText>
+                  <StandardText>{cartProduct.quantity}</StandardText>
+                  <StandardText>
+                    €{(cartProduct.price / 100).toFixed(2)}
+                  </StandardText>
+                  <StandardText>
+                    €
+                    {((cartProduct.price * cartProduct.quantity) / 100).toFixed(
+                      2,
+                    )}
                   </StandardText>
                 </ProductRowInfoContainer>
               ) : null;
@@ -182,22 +249,30 @@ function Cart({ shoppingCart, cartItemsNumber }: CookiesProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // afterwards: get data from API
-  const { pastas } = await import('../util/database');
-
   // get cookies information from context on server side and parse them
   const cartCookies = context.req.cookies.shoppingcart || '[]';
   const shoppingCart = JSON.parse(cartCookies);
+  console.log(shoppingCart);
 
-  // if in the cookie there is an object with the same id as pasta then create new object with the pasta product info
-  const finalCartCookie = shoppingCart.map((cookie: PastaType) => ({
+  // get array of ids of cookies
+  const shoppingCartIds = shoppingCart.map((cookie: CookieType) => cookie.id);
+  console.log(shoppingCartIds);
+
+  // get data from db
+  const pastasInCookies = await getPastasInCookies(shoppingCartIds);
+  console.log(pastasInCookies);
+
+  // if in the cookie there is an object with the same id as pasta then create new object with quantity plus the pasta product info
+  const finalCartCookie = shoppingCart.map((cookie: CookieType) => ({
     ...cookie,
-    ...pastas.find((pasta) => pasta.id === cookie.id),
+    ...pastasInCookies.find((pasta) => pasta.id === cookie.id),
   }));
+  console.log(finalCartCookie);
 
   return {
     props: {
       shoppingCart: finalCartCookie,
+      cookies: shoppingCart,
     },
   };
 };

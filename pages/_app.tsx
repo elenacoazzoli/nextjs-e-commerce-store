@@ -28,7 +28,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (cookies.length > 0) {
       setTotalCart(
         cookies.reduce(
-          (sum: number, cookie: CookieType) => sum + cookie.quantity,
+          (sum: number, cookie: CookieType) =>
+            cookie.quantity > 0 ? sum + cookie.quantity : sum,
           0,
         ),
       );

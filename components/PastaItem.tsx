@@ -73,7 +73,7 @@ const PastaItem: FunctionComponent<PastaItemProps> = ({ pasta }) => {
           <PastaInfoContainer>
             <PastaCategory>{pasta.category.toUpperCase()}</PastaCategory>
             <PastaName>{pasta.name}</PastaName>
-            <PastaPrice>€ {pasta.price.toFixed(2)}</PastaPrice>
+            <PastaPrice>€ {(pasta.price / 100).toFixed(2)}</PastaPrice>
           </PastaInfoContainer>
         </PastaTypeContainer>
       </Link>

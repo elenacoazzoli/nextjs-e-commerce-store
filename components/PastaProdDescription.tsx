@@ -170,7 +170,7 @@ const PastaProdDescription: FunctionComponent<PastaItemProps> = ({
           </WeightInfoContainer>
         </WeightInfoContainer>
 
-        <PastaPrice>€ {pasta.price.toFixed(2)}</PastaPrice>
+        <PastaPrice>€ {(pasta.price / 100).toFixed(2)}</PastaPrice>
         <CartButtonsContainer>
           <AmountButtonsContainer>
             <AmountChangerButton
