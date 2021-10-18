@@ -22,8 +22,8 @@ body{
 function MyApp({ Component, pageProps }: AppProps) {
   const [totalCart, setTotalCart] = useState(0);
 
-  async function getAllCookies() {
-    const getCookiesFunction = await Cookies.get('shoppingcart');
+  function getAllCookies() {
+    const getCookiesFunction = Cookies.get('shoppingcart');
     const cookies = getCookiesFunction ? JSON.parse(getCookiesFunction) : [];
     if (cookies.length > 0) {
       setTotalCart(

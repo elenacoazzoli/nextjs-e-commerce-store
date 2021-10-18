@@ -4,7 +4,11 @@ import Head from 'next/head';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Layout from '../../components/Layout';
 import PastaProdDescription from '../../components/PastaProdDescription';
-import { CookieType } from '../../util/cookies';
+import {
+  addNewItemToCookies,
+  CookieType,
+  updateAmountOfExistingCookieItem,
+} from '../../util/cookies';
 import { getPasta, PastaType } from '../../util/database';
 
 interface ProductProps {
@@ -47,18 +51,17 @@ function Product({
 
     let newCookie;
     if (isPastaCookieExisting) {
-      const cookieIndex = currentCookies.findIndex(
-        (cookie: CookieType) => cookie.id === singlePastaProduct.id,
+      newCookie = updateAmountOfExistingCookieItem(
+        currentCookies,
+        singlePastaProduct,
+        productQuantity,
       );
-      // Update object's name property.
-      currentCookies[cookieIndex].quantity += productQuantity;
-
-      newCookie = currentCookies;
     } else {
-      newCookie = [
-        ...currentCookies,
-        { id: singlePastaProduct.id, quantity: productQuantity },
-      ];
+      newCookie = addNewItemToCookies(
+        currentCookies,
+        singlePastaProduct,
+        productQuantity,
+      );
     }
 
     Cookies.set('shoppingcart', JSON.stringify(newCookie));

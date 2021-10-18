@@ -50,6 +50,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-testing-library": "^4.0.1",
     "eslint-plugin-unicorn": "^36.0.0",
+    "jest": "^27.3.0",
     "typescript": "^4.2.4"
   },
   "resolutions": {

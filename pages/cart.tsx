@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import { CookieType } from '../util/cookies';
+import { sumAllPrices } from '../util/cartSum';
+import { CookieType, removeItemFromCookie } from '../util/cookies';
 import { getPastasInCookies, PastaType } from '../util/database';
 
 const CartInfoContainer = styled.div`
@@ -139,15 +140,7 @@ function Cart({
   // sum prices of items in cart
   const sumPrices = (array: PastaType[]) => {
     array = updatedShoppingCart;
-    const summedPrices = array.reduce(
-      (sum: number, pasta: PastaType) =>
-        pasta.quantity && pasta.quantity > 0
-          ? sum + pasta.quantity * pasta.price
-          : sum,
-      0,
-    );
-
-    setSubTotal(Math.round(summedPrices + Number.EPSILON) / 100);
+    setSubTotal(sumAllPrices(array));
   };
 
   const deleteClickHandler = (id: number) => {
@@ -155,7 +148,6 @@ function Cart({
     const deletedCartItem = updatedShoppingCart.find(
       (cartItem) => cartItem.id === id,
     );
-    console.log(deletedCartItem);
 
     if (deletedCartItem) {
       // update the shoppingcart array
@@ -164,18 +156,14 @@ function Cart({
       );
       setUpdatedShoppingCart(filteredShoppingCart);
       setIsCartEmpty(filteredShoppingCart.length === 0);
-      console.log(updatedShoppingCart);
 
       // update cookies
-      const cookieIndex = cookies.findIndex(
-        (cookie: CookieType) => cookie.id === deletedCartItem.id,
-      );
-      cookies.splice(cookieIndex, 1);
-      Cookies.set('shoppingcart', JSON.stringify(cookies));
+      const newCookie = removeItemFromCookie(cookies, deletedCartItem);
+      Cookies.set('shoppingcart', JSON.stringify(newCookie));
 
       // update cart items sum
       updateCartItemsNumber(
-        cookies.reduce(
+        newCookie.reduce(
           (sum: number, cookie: CookieType) =>
             cookie.quantity > 0 ? sum + cookie.quantity : sum,
           0,
@@ -252,22 +240,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // get cookies information from context on server side and parse them
   const cartCookies = context.req.cookies.shoppingcart || '[]';
   const shoppingCart = JSON.parse(cartCookies);
-  console.log(shoppingCart);
 
   // get array of ids of cookies
   const shoppingCartIds = shoppingCart.map((cookie: CookieType) => cookie.id);
-  console.log(shoppingCartIds);
 
   // get data from db
   const pastasInCookies = await getPastasInCookies(shoppingCartIds);
-  console.log(pastasInCookies);
 
   // if in the cookie there is an object with the same id as pasta then create new object with quantity plus the pasta product info
   const finalCartCookie = shoppingCart.map((cookie: CookieType) => ({
     ...cookie,
     ...pastasInCookies.find((pasta) => pasta.id === cookie.id),
   }));
-  console.log(finalCartCookie);
 
   return {
     props: {
