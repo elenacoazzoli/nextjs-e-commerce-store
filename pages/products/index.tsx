@@ -109,7 +109,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
   // get data from db
   const pastas = await getPastas();
   const categories = await getCategories();
-  console.log(categories);
   return {
     props: {
       pastas,
