@@ -1,6 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import dotenvSafe from 'dotenv-safe';
 import postgres from 'postgres';
+import setPostgresDefaultsOnHeroku from './setPostgresDefaultsOnHeroku';
 
 export type PastasType = PastaType[];
 
@@ -19,6 +20,8 @@ export type PastaType = {
   cookingTime: number;
   image: string;
 };
+
+setPostgresDefaultsOnHeroku();
 
 // read the environment variables in the .env file to connect to Postgres
 dotenvSafe.config();
