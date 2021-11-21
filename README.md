@@ -50,9 +50,9 @@ To run this project locally, the following steps are needed:
 4. Create a copy of the .env-example on the root of the project and modify it with your credentials. The file should include these four environment variables:
 
 - PGHOST=localhost
-- PGDATABASE=<nameOfYourDatabase>
-- PGUSERNAME=<nameOfYourUsername>
-- PGPASSWORD=<nameOfYourPassword>
+- PGDATABASE=\<nameOfYourDatabase>
+- PGUSERNAME=\<nameOfYourUsername>
+- PGPASSWORD=\<nameOfYourPassword>
 
 5. Rename this file to .env .
 6. On the command Line go to the project directory and install the required dependencies with:
