@@ -228,9 +228,13 @@ function Cart({
 
       <ActionsContainer>
         <Link href="/products" passHref>
-          <ContinueLink>CONTINUE SHOPPING</ContinueLink>
+          <ContinueLink>Continue shopping</ContinueLink>
         </Link>
-        {!isCartEmpty && <CheckoutLink>CHECKOUT</CheckoutLink>}
+        {!isCartEmpty && (
+          <Link href="/checkout" passHref>
+            <CheckoutLink>CHECKOUT</CheckoutLink>
+          </Link>
+        )}
       </ActionsContainer>
     </Layout>
   );

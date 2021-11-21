@@ -4,7 +4,6 @@ import Header from './Header';
 
 const PageContainer = styled.main`
   margin: 160px 64px 0 64px;
-  height: 2000px;
 `;
 
 interface LayoutProps {
